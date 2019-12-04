@@ -37,3 +37,43 @@ ALTER TABLE mentorship
 	ADD CONSTRAINT fk2 FOREIGN KEY(mentee_id) REFERENCES employees(id) ON DELETE CASCADE ON UPDATE CASCADE,
     DROP INDEX mm_constraint;
     
+INSERT INTO employees (em_name, gender, contact_number, salary, years_in_company) VALUES 
+    ('James Lee', 'M', '516-514-6568', 3500, 11),
+    ('Peter Pasternak', 'M', '845-644-7919', 6010, 10),
+    ('Clara Couto', 'F', '845-641-5236', 3900, 8),
+    ('Walker Welch', 'M', NULL, 2500, 4),
+    ('Li Xiao Ting', 'F', '646-218-7733', 5600, 4),
+    ('Joyce Jones', 'F', '523-172-2191', 8000, 3),
+    ('Jason Cerrone', 'M', '725-441-7172', 7980, 2),
+    ('Prudence Phelps', 'F', '546-312-5112', 11000, 2),
+    ('Larry Zucker', 'M', '817-267-9799', 3500, 1),
+    ('Serena Parker', 'F', '621-211-7342', 12000, 1);
+
+INSERT INTO mentorship VALUES
+(1, 2, 'Ongoing', 'SQF Limited'),
+(1, 3, 'Past', 'Wayne Fibre'),
+(2, 3, 'Ongoing', 'SQF Limited'),
+(3, 4, 'Ongoing', 'SQF Limited'),
+(6, 5, 'Past', 'Flynn Tech');
+
+UPDATE employees
+SET contact_number = '516-514-1729'
+WHERE id = 1;
+
+DELETE FROM employees
+WHERE id = 5;
+
+UPDATE employees
+SET id = 11
+WHERE id = 4;
+
+SELECT * FROM employees;
+SELECT * FROM mentorship;
+
+SELECT em_name, gender FROM employees;
+SELECT em_name AS 'Employee Name', gender AS 'Employee Gender' FROM employees;
+SELECT em_name, gender FROM employees LIMIT 3;
+SELECT DISTINCT(gender) FROM employees;
+
+SELECT * FROM employees WHERE id != 1;
+SELECT * FROM employees WHERE id BETWEEN 1 AND 3;
