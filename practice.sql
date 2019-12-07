@@ -77,3 +77,58 @@ SELECT DISTINCT(gender) FROM employees;
 
 SELECT * FROM employees WHERE id != 1;
 SELECT * FROM employees WHERE id BETWEEN 1 AND 3;
+
+SELECT * FROM employees WHERE em_name LIKE '%er';
+SELECT * FROM employees WHERE em_name LIKE '%er%';
+SELECT * FROM employees WHERE em_name LIKE '____e%';
+
+SELECT * FROM employees WHERE id IN (6, 7, 9);
+SELECT * FROM employees WHERE id NOT IN (7, 8);
+
+SELECT * FROM employees WHERE (years_in_company > 5 OR salary > 5000) AND gender = 'F';
+
+/* subqueries */
+SELECT em_name FROM employees WHERE id IN
+(SELECT mentor_id FROM mentorship WHERE project = 'SQF Limited');
+
+SELECT date_created FROM employees WHERE id IN
+(SELECT mentor_id FROM mentorship WHERE status = 'past');
+
+SELECT * FROM mentorship;
+
+SELECT date_created FROM employees WHERE id IN
+(SELECT mentor_id FROM mentorship WHERE mentor_id < 3);
+
+SELECT * FROM employees ORDER BY gender, em_name;
+SELECT * FROM employees ORDER BY gender DESC, em_name;
+
+/* Functions */
+
+SELECT concat('Hello', ' World');
+SELECT substring('Programming', 2);
+SELECT substring('Programming', 2, 6);
+SELECT now();
+SELECT curdate();
+SELECT curtime();
+
+/* Aggregate Functions */
+
+# Comment
+-- Commment
+
+SELECT count(*) FROM employees;
+SELECT count(*) FROM mentorship;
+
+SELECT count(contact_number) FROM employees;
+SELECT count(DISTINCT gender) FROM employees;
+
+SELECT AVG(salary) FrOM employees;
+SELECT round(AVG(salary), 2) FROM employees;
+
+SELECT MAX(salary) FROM employees;
+SELECT MIN(id) FROM employees;
+SELECT SUM(salary) FROM employees;
+
+SELECT gender, MAX(salary) FROM employees GROUP BY gender;
+
+SELECT gender, MAX(salary) FROM employees GROUP BY gender HAVING MAX(salary) > 10000;
