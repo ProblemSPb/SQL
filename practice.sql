@@ -132,3 +132,86 @@ SELECT SUM(salary) FROM employees;
 SELECT gender, MAX(salary) FROM employees GROUP BY gender;
 
 SELECT gender, MAX(salary) FROM employees GROUP BY gender HAVING MAX(salary) > 10000;
+
+SELECT employees.id, mentorship.mentor_id, employees.em_name AS 'Mentor', mentorship.project AS 'Project Name'
+FROM
+mentorship
+JOIN
+employees
+ON
+employees.id = mentorship.mentor_id;
+
+SELECT employees.em_name AS 'Mentor', mentorship.project AS 'Project Name'
+FROM
+mentorship
+JOIN
+employees
+ON
+employees.id = mentorship.mentor_id;
+
+-- unions
+-- union removes duplicates
+-- union all keeps everything
+
+SELECT em_name, salary FROM employees WHERE gender = 'M'
+UNION
+SELECT em_name, years_in_company FROM employees WHERE gender = 'F';
+
+SELECT mentor_id FROM mentorship
+UNION ALL
+SELECT id FROM employees WHERE gender = 'F';
+
+-- views
+-- view is a virtual table
+
+CREATE VIEW myView AS
+SELECT employees.id, mentorship.mentor_id, employees.em_name AS 'Mentor',
+mentorship.project AS 'Project Name'
+FROM
+mentorship
+JOIN
+employees
+ON
+employees.id = mentorship.mentor_id;
+
+SELECT * FROM myView;
+
+ALTER VIEW myView AS
+SELECT employees.id, mentorship.mentor_id, employees.em_name AS 'Mentor', mentorship.project AS 'Project'
+FROM mentorship
+JOIN
+employees
+ON
+employees.id = mentorship.mentor_id;
+
+SELECT * FROM myView;
+
+-- deleting a view
+DROP VIEW IF EXISTS myView;
+
+-- Triggers
+-- actions activated when a defined event occurs for a specific table
+-- event can be: INSERT, UPDATE or DELETE
+-- trigger can be before or after an event
+
+CREATE TABLE ex_employees (
+em_id INT PRIMARY KEY,
+em_name VARCHAR(255) NOT NULL,
+gender CHAR(1) NOT NULL,
+date_left TIMESTAMP DEFAULT NOW()
+);
+
+DELIMITER $$
+CREATE TRIGGER update_ex_employees BEFORE DELETE ON employees FOR EACH ROW
+BEGIN
+	INSERT INTO ex_employees (em_id, em_name, gender) VALUES (OLD.id, OLD.em_name, OLD.gender);
+END $$
+DELIMITER ;
+
+DELETE FROM employees WHERE id = 10;
+
+SELECT * FROM employees;
+SELECT * FROM ex_employees;
+
+-- deleting a trigger
+DROP TRIGGER IF EXISTS update_ex_employees;
