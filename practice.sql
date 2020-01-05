@@ -215,3 +215,82 @@ SELECT * FROM ex_employees;
 
 -- deleting a trigger
 DROP TRIGGER IF EXISTS update_ex_employees;
+
+-- 5 Jan 2020
+
+SET @result = sqrt(9);
+SELECT @result;
+
+-- combining SET and SELECT
+SELECT @result := sqrt(12);
+
+-- stored routines (stored procedures and stored functions)
+-- stored procedures
+-- procedures are executed by using the CALL keyword
+DELIMITER $$
+CREATE PROCEDURE select_info()
+BEGIN
+	SELECT * FROM employees;
+    SELECT * FROM mentorship;
+END $$
+DELIMITER ;
+
+CALL select_info;
+
+DELIMITER $$
+CREATE PROCEDURE employee_info(IN p_em_id INT)
+BEGIN
+	SELECT * FROM mentorship WHERE mentor_id = p_em_id;
+    SELECT * FROM mentorship WHERE mentee_id = p_em_id;
+    SELECT * FROM employees WHERE id = p_em_id;
+END $$
+DELIMITER ;
+
+CALL employee_info(1);
+
+DELIMITER $$
+CREATE PROCEDURE employee_name_gender(IN p_em_id INT, OUT p_name VARCHAR(255), OUT p_gender CHAR(1))
+BEGIN
+	SELECT em_name, gender INTO p_name, p_gender FROM employees WHERE id = p_em_id;
+END $$
+DELIMITER ;
+
+-- we can pass the variables without declaring them, MySQL will declare them for us.
+-- @v_name, @v_gender
+CALL employee_name_gender(1, @v_name, @v_gender);
+
+SELECT * FROM employees WHERE gender = @v_gender;
+
+-- get mentor_id based on its mentee_id and project values
+DELIMITER $$
+CREATE PROCEDURE get_mentor(INOUT p_em_id INT, IN p_project VARCHAR(255))
+BEGIN
+	SELECT mentor_id INTO p_em_id FROM mentorship WHERE mentee_id = p_em_id AND project = p_project;
+END $$
+
+DELIMITER ;
+
+SET @v_id = 3;
+
+CALL get_mentor(@v_id, 'Wayne Fibre');
+
+SELECT @v_id;
+
+-- STORED FUNCTIONS
+-- a stored function must return a value using the RETURN keyword.
+-- executed by using SELECT statement
+
+-- to calculate the bonus for employees
+DELIMITER $$
+CREATE FUNCTION calculateBonus(p_salary DOUBLE, p_multiple DOUBLE) RETURNS DOUBLE DETERMINISTIC
+BEGIN
+	DECLARE bonus DOUBLE(8, 2);
+    SET bonus = p_salary*p_multiple;
+    RETURN bonus;
+END $$
+DELIMITER ;
+
+SELECT id, em_name, salary, calculateBonus(salary, 1.5) AS bonus FROM employees;
+
+-- Deleting a stored function
+DROP FUNCTION IF EXISTS calculateBonus;
