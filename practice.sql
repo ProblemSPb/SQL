@@ -294,3 +294,68 @@ SELECT id, em_name, salary, calculateBonus(salary, 1.5) AS bonus FROM employees;
 
 -- Deleting a stored function
 DROP FUNCTION IF EXISTS calculateBonus;
+
+
+--Jan 19
+								    
+-- Control flow Tools
+-- IF statement
+
+DELIMITER $$
+CREATE FUNCTION if_demo(x INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	IF x > 0 THEN RETURN 'x is positive';
+    ELSEIF x = 0 THEN RETURN 'x is zero';
+    ELSE RETURN 'x is negative';
+	END IF;
+
+END $$
+DELIMITER ; 
+
+SELECT if_demo(2);
+
+DELIMITER $$
+CREATE FUNCTION case_demo_A(x INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	CASE x
+		WHEN 1 THEN RETURN 'x is 1';
+        WHEN 2 THEN RETURN 'x is 2';
+        ELSE RETURN 'x is neither 1 nor 2';
+	END CASE;
+END $$
+DELIMITER ;
+
+SELECT case_demo_A(1);
+
+DELIMITER $$
+CREATE FUNCTION case_demo_B(x INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	CASE
+    WHEN x > 0 THEN RETURN 'x is positive';
+    WHEN x = 0 THEN RETURN 'x is zero';
+    ELSE RETURN 'x is negative';
+    END CASE;
+    
+END $$
+DELIMITER ;
+
+SELECT case_demo_B(6);
+
+-- WHILE statement
+
+DELIMITER $$
+CREATE FUNCTION while_demo(x INT, y INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	DECLARE z VARCHAR(255);
+	SET z = '';
+
+	while_example: WHILE x<y DO
+		SET x = x + 1;
+		SET z = concat(z, x);
+	END WHILE;
+
+	RETURN z;
+END $$
+DELIMITER ;
+
+SELECT while_demo(1, 5);
