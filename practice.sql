@@ -359,3 +359,67 @@ END $$
 DELIMITER ;
 
 SELECT while_demo(1, 5);
+								    
+-- REPEAT 
+-- it will perform tasks at least ONCE. Always.
+
+DELIMITER $$
+CREATE FUNCTION repeat_demo(x INT, y INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	DECLARE z VARCHAR(255);
+    SET z = '';
+    
+    REPEAT
+		SET x = x + 1;
+        SET z = concat(z, x);
+        UNTIL x>=y
+        END REPEAT;
+        
+        RETURN z;
+	END $$
+    DELIMITER ;
+    
+SELECT repeat_demo(1, 5);
+
+-- LOOP statement
+
+DELIMITER $$
+CREATE FUNCTION loop_demo_A(x INT, y INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	DECLARE z VARCHAR(255);
+    SET z = '';
+    simple_loop: LOOP
+		SET x = x + 1;
+        IF x>y THEN
+			LEAVE simple_loop;
+		END IF;
+        SET z = concat(z, x);
+	END LOOP;
+    
+    RETURN z;
+END $$
+DELIMITER ;
+
+SELECT loop_demo_A(1, 5);
+
+-- LOOP with ITERATE
+DELIMITER $$
+CREATE FUNCTION loop_demo_B(x INT, y INT) RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+	DECLARE z VARCHAR(255);
+    SET z = '';
+    
+    simple_loop: LOOP
+		SET x = x + 1;
+        IF x = 3 THEN ITERATE simple_loop;
+			ELSEIF x > y THEN LEAVE simple_loop;
+		END IF;
+        SET z = concat(z, x);
+	END LOOP;
+    
+    RETURN z;
+END $$
+DELIMITER ;
+
+SELECT loop_demo_B(1, 5);
+
